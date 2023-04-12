@@ -14,17 +14,19 @@ const Chatroom = require("./models/chatroom");
 const Post = require("./models/post");
 const Broadcast = require("./models/broadcast");
 const Chat = require("./models/chat");
-// const Message = require("./models/message");
 const methodOverride = require("method-override");
-// const chat = require("./models/chat");
 const jwt = require('jsonwebtoken');
-const { log } = require("console");
 const cookieParser = require("cookie-parser");
+
+//static files
+app.use(express.static("views"));
 
 app.use(express.json());
 app.use(cookieParser());
-//const userRoutes = require('./routes/users');
-app.use(express.static(path.join(__dirname, "public"))); // Test för att få CSS att funka
+
+app.use(express.static(path.join(__dirname, "public"))); // Solves the MIME-issue
+
+// Connects to the database
 mongoose
   .connect(
     "mongodb+srv://krifors:LKWsNIAMvoOC5Jeq@duckchat.blafzko.mongodb.net/?retryWrites=true&w=majority",
@@ -38,6 +40,7 @@ mongoose
     console.log(err);
   });
 
+// Sets EJS as our view engine and joins all the paths in views
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
@@ -45,31 +48,35 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
 
-//app.use(session(sessionConfig)); //nåt knas, behöver inte båda??!
+// Gives parameters for the session
 const sessionOptions = {
   secret: "Penguinsarethebestandyouaredumbifyoudontthinkso",
   resave: false,
   saveUninitialized: false,
 };
+
+// Starts the session
 app.use(session(sessionOptions));
 
 app.use(flash());
 
+// Starts the autentication process with session
 app.use(passport.session());
 
 app.use(passport.initialize());
 
-//hej passport vi vill att du använder local strategy som vi har i require.
-//och methoden kommer från passport local mongoose.
+// We tell passport to use Localstrategy to authenticate the user
 passport.use(new LocalStrategy(User.authenticate()));
 
+// Generates a JWT-token for each user
 function generateToken(user) {
   const payload = { userId: user._id };
   const secret = 'Penguinsarethebestandyouaredumbifyoudontthinkso'; // replace with your own secret key
-  const options = { expiresIn: '20m' }; // token will expire after 1 hour
+  const options = { expiresIn: '20m' }; // token will expire in the amount of time given
   return jwt.sign(payload, secret, options);
 }
 
+// Flash?
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   res.locals.success = req.flash("success");
@@ -77,45 +84,37 @@ app.use((req, res, next) => {
   next();
 });
 
-//dessa methoder kommer fron mongooselocal
-//hur spara vi data i en session
+//These methods comes from mongooselocal
+//How to store data in a session hur spara vi data i en session
 passport.serializeUser(User.serializeUser());
-//how to un store i en session
+//how to "un-store" data in a session
 passport.deserializeUser(User.deserializeUser());
 
-
+// Renders the functioning socket chat
 app.get("/", (req, res) => {
   res.render("chat");
 });
 
+// Renders route to register a user
 app.get("/register", (req, res) => {
-  res.render("register", { messages: req.flash("success", "error") });
+  res.render("register");
 });
 
-//vi tar det vi vill ha från req.body
-//sen lägger vi user name in an object into new User, sparar i variabel (user)
-//sen kallar vi på user.register
-//om man vill lägga till error handler kan man använda catchAsync, kolla det avsnittet
+// We save the data given from a new user and adds it to the database and then redirects to the login site
+
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
   const user = new User({ username });
-  const registeredUser = await User.register(user, password);
-  console.log(registeredUser);
-  req.flash("success", "now just login!");
+  await User.register(user, password);
   res.redirect("/login");
-  // res.render('register')
 });
-//en middleware som går på alla requests, innan routesen kommer, har vi alltså acess i alla
-//local routes
 
+// Renders the login site
 app.get("/login", (req, res) => {
-  res.render("login", { messages: req.flash("success", "error") });
+  res.render("login");
 });
 
-//passport ger oss en middleware som vi kan använda som heter passport.authenticate
-//lägger in den på samma ställe som man vanligtvis lägger middlewares, i den förväntas vi
-//lägga en strategi som parameter, local (kan va google, twitter också tex)
-//failureflash ger ett meddelande, failureredirect kör oss till /login om nåt går fel
+// When we log in, we create a JWT-token to the user and redirects to /channel. Saves the JWT-token as a cookie
 app.post(
   "/login",
   passport.authenticate("local", {
@@ -124,12 +123,13 @@ app.post(
   }),
   async (req, res) => {
     const token = generateToken(req.user);
-    req.flash("success", "welcome back!");
-    res.cookie('jwt', token, { httpOnly: true }); // set the token as a cookie
+    res.cookie('jwt', token, { httpOnly: true }); // Sets the token as a cookie
     res.redirect("/ducks/api/channel");
   }
 );
 
+// Verifies that the JWT-token is the same as the one it was given and also checks the secret key
+// If this doesn't match, we send back that the token is invalid. If no token is received, we send back that message
 function verifyToken(req, res, next) {
   const token = req.cookies.jwt;
   if (token) {
@@ -146,6 +146,7 @@ function verifyToken(req, res, next) {
   }
 }
 
+// Gets the data from all channels. Verifies that the token is correct as well and also sends the data back as JSON. Renders start
 app.get("/ducks/api/channel/", verifyToken, async (req, res) => {
   try {
     if(req.headers["accept"] == "application/json"){
@@ -161,16 +162,17 @@ app.get("/ducks/api/channel/", verifyToken, async (req, res) => {
   }
 });
 
-//skapa ett nytt chatroom
+// Renders the new chatroom if the token is accepted, otherwise you're redirected back to the login page
 app.get("/ducks/api/channel/new", verifyToken, (req, res) => {
-  if (isLoggedIn) {
+  if (verifyToken) {
     res.render("newChatroom");
   } else {
     res.redirect("/login");
   }
 });
 
-
+// Creates a new chatroom that gets a new id. If the name is taken the response is 409. 
+// Otherwise you're redirected to the newly created chat room
 app.put("/ducks/api/channel", verifyToken, async (req, res) => {
   try {
     const existingChatroom = await Chatroom.findOne({
@@ -197,8 +199,7 @@ app.put("/ducks/api/channel", verifyToken, async (req, res) => {
   }
 });
 
-
-
+// Renders the selected chat room and collects the data from that chat room along with the data from broadcast
 app.get('/ducks/api/channel/:id', verifyToken, async (req, res) => {
   const broadcasts = await Broadcast.find({});
   const chatroom = await Chatroom.findById(req.params.id);
@@ -210,16 +211,13 @@ app.get('/ducks/api/channel/:id', verifyToken, async (req, res) => {
   }
 })
 
-
-
+// Collects the id from the chat room, accepts new data and pushes it to the database
 app.post("/ducks/api/channel/:id", verifyToken, async (req, res) => {
   const chatroomId = req.params.id;
   const newPost = req.body;
   try {
     const post = await Post.create(newPost);
     const chatroom = await Chatroom.findById(chatroomId);
-    console.log(chatroomId); // check chatroomId value
-    console.log(chatroom.posts); // check chatroom.posts value
     chatroom.posts.push(post._id);
     await chatroom.save();
     if(req.headers["accept"] == "application/json"){
@@ -233,8 +231,7 @@ app.post("/ducks/api/channel/:id", verifyToken, async (req, res) => {
   }
 });
 
-
-
+// Enables you to delete a created chat room, if you're verified and set as an admin. Otherwise you're rejected that possibility
 app.delete('/ducks/api/channel/:id', [verifyToken, isAdmin],async(req, res) => {
     const { id } = req.params;
     await Chatroom.findByIdAndDelete(id);
@@ -245,35 +242,24 @@ app.delete('/ducks/api/channel/:id', [verifyToken, isAdmin],async(req, res) => {
     }
 })
 
-
-
+// Logs out the user and redirects him to the log in page
 app.get("/logout", (req, res) => {
-  req.logout(function (err) {
-    if (err) {
-      console.log(err);
-      req.flash("error", "Oops, something went wrong!");
-    } else {
-      req.flash("success", "Goodbye!");
-    }
+  req.logout(function () {
     res.redirect("/login");
   });
 });
 
-
-
+// Allows the verified admin to enter the broadcast page and finds all broadcasts
 app.get("/ducks/api/broadcast", [verifyToken, isAdmin], async (req, res) => {
   const broadcasts = await Broadcast.find({});
   if (req.headers["accept"] == "application/json") {
-   
-    //console.log(broadcasts);
     res.status(200).send(broadcasts)
-    
   }else{
     res.render("broadcast", { broadcasts });
   }
 });
 
-
+// If verified admin, you can post a new broadcast that pushes that data to all existing chat rooms
 app.post("/ducks/api/broadcast", [verifyToken, isAdmin], async (req, res) => {
   const newPost = req.body;
   const post = await Post.create(newPost);
@@ -285,18 +271,16 @@ app.post("/ducks/api/broadcast", [verifyToken, isAdmin], async (req, res) => {
   }else{
   res.redirect("/ducks/api/broadcast");
   }
-
 });
 
+// Tells the terminal that everything works just fine
 const server = app.listen(3000, function () {
   console.log("listening for requests on port 3000,");
 });
 
-//static files
-app.use(express.static("views"));
 
+// This is where we tried to use sockets
 // Socket setup & pass server
-
 let io = socket(server);
 
 io.on("connection", function (socket) {
