@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>broadcast</h1>
+ 
+    <ul>
+        
+        <% for( let broadcast of broadcasts){ %>
+            <li><%= broadcast.username %>
+                <%= broadcast.message  %>
+                
+            </li>
+        <% } %>
+    </ul>
+    
+
+
+
+    <form action="/ducks/api/broadcast/" method="post">
+        <label for="username">name</label>
+        <input name="username" id="username" type="text" placeholder="name">
+        <label for="message">your message</label>
+        <input name="message" id="message" type="text" placeholder="Message">
+        <button id="send">Send</button>
+    </form>
+
+    <button onclick="location.href='/ducks/api/channel'">Back to all channels</button>
+    
+</body>
+</html>
