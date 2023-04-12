@@ -20,10 +20,8 @@ const cookieParser = require("cookie-parser");
 
 //static files
 app.use(express.static("views"));
-
 app.use(express.json());
 app.use(cookieParser());
-
 app.use(express.static(path.join(__dirname, "public"))); // Solves the MIME-issue
 
 // Connects to the database

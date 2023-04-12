@@ -4,16 +4,24 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>new</title>
+    <title>Create chat room</title>
+    <link rel="stylesheet" href="/newchatroom.css">
 </head>
 <body>
-    <h1>make a new Chatroom</h1>
-    <form action="/ducks/api/channel/?_method=PUT" method="post">
-    <label for="name">Name of the Chatroom</label>
-   <input type="text" id="name" name="chatroom[name]">
-   <button>Create!</button>
-</form>
 
-<button onclick="location.href='/ducks/api/channel'">Back to all channels</button>
+    <h1>Create a new chat room</h1>
+
+    <form action="/ducks/api/channel/?_method=PUT" method="post">
+        <label for="name">Name of the Chatroom</label>
+        <input type="text" id="name" name="chatroom[name]">
+        <button class="create-btn">Create!</button>
+    </form>
+
+    <div class="option-buttons">
+        <button class="option-btn" onclick="location.href='/ducks/api/channel'">Back to all channels</button>
+        <button onclick="location.href='/logout'">Log out!</button>
+        <button onclick="location.href='/ducks/api/broadcast'">Broadcast</button>
+    </div>  
+
 </body>
 </html>

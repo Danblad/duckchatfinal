@@ -1,0 +1,134 @@
+/* Set background color and font color */
+body {
+    background-color: #1a1a1a;
+    color: #fff;
+}
+
+h1 {
+    font-size: 3rem;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Center content */
+h1,
+ul,
+form,
+.option-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    width: 80%;
+    max-width: 800px;
+    text-align: center;
+}
+
+.chat-container {
+    display: flex;
+    justify-content: center;
+  }
+  
+.broadcast-username {
+    color: red;
+    margin-right: 10px;
+  }
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: center; /* add this to center the ul */
+}
+
+ul li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid #444;
+    padding: 10px;
+    width: 100%;
+}
+
+ul li:last-child {
+    border-bottom: none;
+}
+
+/* Style chat room buttons */
+.chatroom-buttons {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.chatroom-buttons:hover {
+    background-color: #555;
+}
+
+/* Style form input fields */
+form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+label {
+    display: block;
+}
+
+input {
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+input:focus {
+    outline: none;
+    box-shadow: 0 0 5px #fff;
+}
+
+button {
+    background-color: #000000; /* set button background color */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+button#send {
+    background-color: aqua;
+    color: #000000;
+}
+
+button#send:hover {
+    background-color: rgb(0, 0, 255);
+    color: #000000;
+}
+
+
+button:hover {
+    background-color: #ff0000;
+}
+
+.delete-button {
+    margin-top: 20px;
+}
+
+/* Style option buttons */
+.option-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    grid-gap: 10px; /* gap between columns */
+    justify-content: center; /* center horizontally */
+    margin-top: 20px;
+}

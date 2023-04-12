@@ -1,0 +1,57 @@
+/* Set background color and font color */
+body {
+    background-color: #1a1a1a;
+    color: #fff;
+    display: flex; /* Add this to center login button */
+    flex-direction: column; /* Add this to center login button */
+    align-items: center; /* Add this to center login button */
+  }
+  
+  /* Center content */
+  h1,
+  form,
+  p {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    width: 80%;
+    max-width: 800px;
+    text-align: center;
+  }
+  
+  /* Style form elements */
+  form label {
+    margin-top: 20px;
+  }
+  
+  form input,
+  form button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+  }
+  
+  form button:hover {
+    background-color: #555;
+  }
+  
+  /* Style register button */
+  .register-btn {
+    background-color: #000000;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+  
+  .register-btn:hover {
+    background-color: #ff0000;
+  }

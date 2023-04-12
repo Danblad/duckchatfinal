@@ -4,33 +4,37 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Broadcast</title>
+    <link rel="stylesheet" href="/broadcast.css">
 </head>
 <body>
     <h1>broadcast</h1>
  
-    <ul>
-        
-        <% for( let broadcast of broadcasts){ %>
-            <li><%= broadcast.username %>
-                <%= broadcast.message  %>
-                
+      <div class="chat-container">
+        <ul>
+          <% for (let broadcast of broadcasts) { %>
+            <li>
+              <span class="broadcast-username"><%= broadcast.username %></span>
+              <span class="broadcast-message"><%= broadcast.message %></span>
             </li>
-        <% } %>
-    </ul>
+          <% } %>
+        </ul>
+      </div>
     
 
 
+    <div>
+        <form action="/ducks/api/broadcast/" method="post">
+            <input name="username" id="username" type="text" placeholder="Name">
+            <input name="message" id="message" type="text" placeholder="Message">
+            <button id="send">Send</button>
+        </form>
+    </div>
 
-    <form action="/ducks/api/broadcast/" method="post">
-        <label for="username">name</label>
-        <input name="username" id="username" type="text" placeholder="name">
-        <label for="message">your message</label>
-        <input name="message" id="message" type="text" placeholder="Message">
-        <button id="send">Send</button>
-    </form>
-
-    <button onclick="location.href='/ducks/api/channel'">Back to all channels</button>
+    <div class="option-buttons">
+      <button onclick="location.href='/ducks/api/channel'">Back to all channels</button>
+      <button onclick="location.href='/logout'">Log out</button>
+    </div>
     
 </body>
 </html>

@@ -1,0 +1,71 @@
+/* Set background color and font color */
+body {
+    background-color: #1a1a1a;
+    color: #fff;
+    display: flex; /* Add this to center login button */
+    flex-direction: column; /* Add this to center login button */
+    align-items: center; /* Add this to center login button */
+  }
+
+  h1 {
+    font-size: 3rem;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Center content */
+  h1,
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    width: 80%;
+    max-width: 800px;
+    text-align: center;
+  }
+  
+  /* Style form elements */
+  form label {
+    margin-top: 20px;
+  }
+  
+  form input,
+  form button.create-btn {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+  }
+  
+  form button.create-btn:hover {
+    background-color: #555;
+  }
+  
+  /* Style option buttons */
+  .option-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    grid-gap: 10px; /* gap between columns */
+    justify-content: center; /* center horizontally */
+    margin-top: 20px;
+  }
+  
+  .option-buttons button {
+    background-color: #000000; /* set button background color */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  .option-buttons button:hover {
+    background-color: #ff0000;
+  }

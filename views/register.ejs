@@ -5,20 +5,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="register.css">
+    <link rel="stylesheet" href="/register.css">
 </head>
 <body>
     <h1>Register to Chat App!</h1>
     <form action="/register" method="post"> 
-        <h2>Choose a username:</h2>
-        <label for="username">Username:</label>
+        <h2>Choose a username</h2>
+        <label for="username">Username</label>
         <input type="text" id="username" name="username">
         <label for="password">Choose a password</label>
         <input type="password" id="password" name="password">
-        <button>make accout!</button>
+        <button>Create account!</button>
     </form>
     <p>Already have an account?</p>
-    <a href="/login">Go to Login!</a>
+    <button class="login-btn" onclick="location.href='/login'">Go to Login!</button>
     
 </body>
 </html>
